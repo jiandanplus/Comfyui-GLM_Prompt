@@ -273,7 +273,7 @@ class GLM_Vision_ImageToPrompt:
         available_prompts = cls.get_image_prompts()
         prompt_keys = list(available_prompts.keys())
         default_selection = prompt_keys[0] if prompt_keys else "无可用提示词"
-        default_model = "glm-4v-flash"
+        default_model = "GLM-4v-flash"
 
         return {
             "required": {
@@ -405,3 +405,4 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "GLM_Text_Chat": "GLM提示词扩写",
     "GLM_Vision_ImageToPrompt": "GLM提示词反推",
 }
+
