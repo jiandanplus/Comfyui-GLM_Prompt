@@ -12,8 +12,8 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE_NAME = './config.json'
 
 # 提示词预设文件
-TEXT_PROMPTS_FILE_NAME = '../text_prompts.txt'
-IMAGE_PROMPTS_FILE_NAME = '../image_prompts.txt'
+TEXT_PROMPTS_FILE_NAME = '../prompt/text_prompts.txt'
+IMAGE_PROMPTS_FILE_NAME = '../prompt/image_prompts.txt'
 
 #文本模型列表
 TEXT_MODL_LIST = [
@@ -245,8 +245,15 @@ class GLM_Text_Chat:
                 top_p=top_p,
                 max_tokens=max_tokens,
             )
-            response_text = response.choices[0].message.content
-            _log_info("GLM-4 响应成功。")
+            # response_text = response.choices[0].message.content
+            # _log_info("GLM-4 响应成功。")
+            # return (response_text,)
+            response_text = str(response.choices[0].message.content)
+            if "<|begin_of_box|>" in response_text and "<|end_of_box|>" in response_text:
+                start = response_text.find("<|begin_of_box|>") + len("<|begin_of_box|>")
+                end = response_text.find("<|end_of_box|>")
+                response_text = response_text[start:end].strip()
+            _log_info(f"GLM_vsion响应成功。({response_text})...")
             return (response_text,)
         except Exception as e:
             error_message = f"GLM-4 API 调用失败: {e}"
@@ -392,7 +399,11 @@ class GLM_Vision_ImageToPrompt:
                 messages=[{"role": "user", "content": content_parts}]
             )
             response_content = str(response.choices[0].message.content)
-            _log_info("GLM_vsion响应成功。")
+            if "<|begin_of_box|>" in response_content and "<|end_of_box|>" in response_content:
+                start = response_content.find("<|begin_of_box|>") + len("<|begin_of_box|>")
+                end = response_content.find("<|end_of_box|>")
+                response_content = response_content[start:end].strip()
+            _log_info(f"GLM_vsion响应成功。({response_content})...")
             return (response_content,)
         except Exception as e:
             error_message = f"GLM-4V API 调用失败: {e}"
